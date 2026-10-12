@@ -2,10 +2,10 @@
   "name": "bruma-cocina-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "node --watch index.js",
-    "start": "node index.js"
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -14,13 +14,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/LeaFerrero/bruma-cocina-backend/issues"
   },
   "homepage": "https://github.com/LeaFerrero/bruma-cocina-backend#readme",
   "dependencies": {
     "cors": "^2.8.6",
-    "express": "^5.3.0"
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "mongoose": "^9.11.1",
+    "socket.io": "^4.8.4"
   }
 }
