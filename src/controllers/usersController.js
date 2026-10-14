@@ -1,4 +1,4 @@
-import User from "../models/Usuario.js";
+import User from "../models/User.js";
 
 const getUsers = async (req, res, next) => {
   try {
@@ -34,10 +34,10 @@ const createUser = async (req, res, next) => {
   try {
     const { password, name, lastName, ...datosUsuario } = req.body;
 
-    const userName = User.generateUserName(name, lastName);
+    const userName = await User.generateUniqueUserName(name, lastName);
 
     const passwordLimpio = password?.trim() || "";
-    const { salt, passwordHash } = User.crearPasswordSeguro(passwordLimpio);
+    const { salt, passwordHash } = User.generateSafePassword(passwordLimpio);
 
     const nuevoUsuario = new User({
       userName,
@@ -68,14 +68,20 @@ const editUser = async (req, res, next) => {
       return next(error);
     }
 
-    if (userData.name || userData.lastName) {
+    const nameChanged = userData.name != user.name;
+    const lastNameChanged = userData.lastName != user.lastName;
+
+    if (nameChanged || lastNameChanged) {
       const newName = userData.name || user.name;
       const newLastName = userData.lastName || user.lastName;
-      userData.userName = await User.generateUserName(newName, newLastName);
+      userData.userName = await User.generateUniqueUserName(
+        newName,
+        newLastName,
+      );
     }
 
     if (password && password.trim() !== "") {
-      const { salt, passwordHash } = User.crearPasswordSeguro(password.trim());
+      const { salt, passwordHash } = User.generateSafePassword(password.trim());
       userData.salt = salt;
       userData.passwordHash = passwordHash;
     }

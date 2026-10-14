@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import validateFields from "../validateFields";
+import validateFields from "../validateFields.js";
 
 const validateUser = [
   body("name")
@@ -16,7 +16,7 @@ const validateUser = [
     .isLength({ min: 2 })
     .withMessage("El apellido debe tener al menos 2 caracteres."),
 
-  body("rol").notEmpty().withMessage("Debes seleccionar un rol."),
+  body("role").notEmpty().withMessage("Debes seleccionar un rol."),
 
   body("password")
     .if(

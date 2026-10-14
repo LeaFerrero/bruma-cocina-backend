@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import ROLES from "../utils/roles.js";
 import crypto from "node:crypto";
-import { stringify } from "node:querystring";
-import { use } from "react";
 
 const roles = Object.values(ROLES);
 
@@ -21,7 +19,7 @@ const userSchema = new mongoose.Schema(
       required: [true, "El apellido es obligatorio"],
       trim: true,
     },
-    rol: {
+    role: {
       type: String,
       required: [true, "El rol es obligatorio"],
       enum: {
@@ -66,12 +64,12 @@ userSchema.statics.generateUniqueUserName = async function (name, lastName) {
   const baseUserName = `${name}.${lastName}`.toLowerCase();
   let finalUserName = baseUserName;
   let counter = 1;
-  let user = User.findOne({ username: finalUserName });
+  let user = await User.findOne({ userName: finalUserName });
 
   while (user) {
-    finalUserName = `${userName}.${counter}`;
+    finalUserName = `${baseUserName}.${counter}`;
     counter++;
-    user = User.findOne(userName);
+    user = await User.findOne({ userName: finalUserName });
   }
 
   return finalUserName;

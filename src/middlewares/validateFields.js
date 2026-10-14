@@ -6,12 +6,13 @@ const validateFields = (req, res, next) => {
   if (!errors.isEmpty()) {
     const message = errors
       .array()
-      .map((e) => e.message)
-      .join("-");
+      .map((e) => e.msg)
+      .join("\n");
     const error = new Error(message);
-    error.status = 404;
+    error.status = 400;
     return next(error);
   }
+  next();
 };
 
 export default validateFields;
