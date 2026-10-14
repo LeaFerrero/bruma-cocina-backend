@@ -1,5 +1,7 @@
 import express from "express";
 import { validateUser } from "../middlewares/validators/validateUser.js";
+import { protectRoute, verifyRole } from "../middlewares/auth.js";
+import ROLES from "../utils/roles.js";
 
 import {
   getUsers,
@@ -10,6 +12,9 @@ import {
 } from "../controllers/usersController.js";
 
 const router = express.Router();
+
+router.use(protectRoute);
+router.use(verifyRole(ROLES.ADMIN));
 
 router.get("/", getUsers);
 router.get("/:id", getUserById);
