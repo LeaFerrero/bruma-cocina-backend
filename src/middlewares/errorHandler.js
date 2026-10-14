@@ -3,14 +3,10 @@ const errorHandler = (err, req, res, next) => {
     console.error("Error capturado:", err);
   }
 
-  if (err.name === "ValidationError") {
-    const message = Object.values(err.errors)
-      .map((e) => e.message)
-      .join(" - ");
-
+  if (err.validationData) {
     return res.status(400).json({
-      error: "Error de validación",
-      message,
+      error: "Datos invalidos",
+      message: err.validationData,
     });
   }
 

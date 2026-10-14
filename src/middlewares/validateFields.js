@@ -1,15 +1,16 @@
 import { validationResult } from "express-validator";
 
+const errorsMessages = validationResult.withDefaults({
+  formatter: (error) => error.msg,
+});
+
 const validateFields = (req, res, next) => {
-  const errors = validationResult(req);
+  const errors = errorsMessages(req);
 
   if (!errors.isEmpty()) {
-    const message = errors
-      .array()
-      .map((e) => e.msg)
-      .join("\n");
-    const error = new Error(message);
+    const error = new Error("Datos invalidos en el formulario");
     error.status = 400;
+    error.validationData = errors.mapped();
     return next(error);
   }
   next();
