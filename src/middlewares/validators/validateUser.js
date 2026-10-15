@@ -23,7 +23,7 @@ const validateUser = [
       (value, { req }) => req.method === "POST" || (value && value.length > 0),
     )
     .isLength({ min: 8 })
-    .withMessage("La contraseña debe tener al menos 6 caracteres."),
+    .withMessage("La contraseña debe tener al menos 8 caracteres."),
 
   validateFields,
 ];
