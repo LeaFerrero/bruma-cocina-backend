@@ -32,7 +32,7 @@ const getUserById = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   try {
-    const { password, name, lastName, ...datosUsuario } = req.body;
+    const { password, name, lastName, ...datosUsuario } = req.body; 
 
     const userName = await User.generateUniqueUserName(name, lastName);
 

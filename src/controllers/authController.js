@@ -31,7 +31,9 @@ const login = async (req, res, next) => {
 
       res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: "none",
+        secure: true,
+        path: "/",
         maxAge: 1000 * 60 * 60,
       });
 
@@ -39,7 +41,7 @@ const login = async (req, res, next) => {
         message: "Inicio de sesión exitoso",
         user: {
           id: user._id,
-          rol: user.rol,
+          rol: user.role,
           userName: user.userName,
         },
       });
@@ -54,4 +56,23 @@ const logout = async (req, res) => {
   res.status(200).json({ message: "Sesión cerrada correctamente" });
 };
 
-export { login, logout };
+const verifySession = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      const error = new Error("No autorizado. Token no proporcionado.");
+      error.status = 401;
+      throw error;
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password");
+
+    res.status(200).json({ isLogged: true, user });
+  } catch (error) {
+    console.log("Motivo del rechazo de JWT:", error.message);
+    next(error);
+  }
+};
+
+export { login, logout, verifySession };

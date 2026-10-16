@@ -1,10 +1,8 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import { connectDB } from "../src/config/db.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import app from "./app.js";
-
-dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 

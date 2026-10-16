@@ -29,6 +29,20 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
+  if (err.name === "JsonWebTokenError") {
+    return res.status(401).json({
+      error: "No autorizado",
+      message: "Firma de token inválida",
+    });
+  }
+
+  if (err.name === "TokenExpiredError") {
+    return res.status(401).json({
+      error: "Sesión expirada",
+      message: "El token ha caducado, por favor inicie sesión nuevamente",
+    });
+  }
+
   res.status(500).json({
     error: "Error interno",
     message: "Ocurrió un problema técnico. Por favor, intente más tarde.",
