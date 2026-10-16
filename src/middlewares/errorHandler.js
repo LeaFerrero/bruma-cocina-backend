@@ -1,52 +1,23 @@
+import ERROR_CODES from "../constants/errorCodes.js";
+import KNOWN_ERRORS from "../constants/knownErrors.js";
+import { sendError } from "../utils/responses.js";
+
 const errorHandler = (err, req, res, next) => {
   if (process.env.NODE_ENV !== "test") {
     console.error("Error capturado:", err);
   }
 
-  if (err.validationData) {
-    return res.status(400).json({
-      error: "Datos invalidos",
-      message: err.validationData,
-    });
-  }
+  const knownError = KNOWN_ERRORS[err.name];
 
-  if (err.name === "CastError") {
-    return res.status(400).json({
-      error: "ID inválido",
-      message: "El formato del ID proporcionado no es válido",
-    });
-  }
+  let statusCode = knownError?.statusCode || err.statusCode || 500;
+  let status = statusCode.toString().startsWith("4") ? "fail" : "error";
+  let message =
+    knownError?.message || err.message || "Error interno del servidor";
+  let details = err.details;
+  let errorCode =
+    knownError?.errorCode || err.errorCode || ERROR_CODES.INTERNAL_SERVER_ERROR;
 
-  if (
-    err.status === 400 ||
-    err.status === 401 ||
-    err.status === 403 ||
-    err.status === 404
-  ) {
-    return res.status(err.status).json({
-      error: `Error ${err.status}`,
-      message: err.message,
-    });
-  }
-
-  if (err.name === "JsonWebTokenError") {
-    return res.status(401).json({
-      error: "No autorizado",
-      message: "Firma de token inválida",
-    });
-  }
-
-  if (err.name === "TokenExpiredError") {
-    return res.status(401).json({
-      error: "Sesión expirada",
-      message: "El token ha caducado, por favor inicie sesión nuevamente",
-    });
-  }
-
-  res.status(500).json({
-    error: "Error interno",
-    message: "Ocurrió un problema técnico. Por favor, intente más tarde.",
-  });
+  return sendError(res, statusCode, status, message, errorCode, details);
 };
 
 export { errorHandler };
