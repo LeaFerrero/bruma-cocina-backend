@@ -107,4 +107,55 @@ const deleteSupply = async (req, res, next) => {
   }
 };
 
-export { getSupplies, getSupplyById, createSupply, editSupply, deleteSupply };
+const addStock = async (req, res, next) => {
+  try {
+    const { items } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      throw new AppError(
+        "La lista de insumos está vacía o tiene un formato inválido",
+        400,
+        null,
+        ERROR_CODES.BAD_REQUEST,
+      );
+    }
+
+    const updateSupplies = [];
+
+    for (const item of items) {
+      const supply = await Supply.findById(item.id);
+
+      if (!supply || supply.status === "eliminado") {
+        throw new AppError(
+          "Insumo no encontrado",
+          404,
+          null,
+          ERROR_CODES.NOT_FOUND || "NOT_FOUND",
+        );
+      }
+
+      supply.currentStock += item.quantity;
+
+      await supply.save();
+
+      updateSupplies.push({
+        id: supply._id,
+        name: supply.name,
+        currentStock: supply.currentStock,
+      });
+    }
+
+    return sendSuccess(res, 200, "Stock ingresado con éxito", updateSupplies);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  getSupplies,
+  getSupplyById,
+  createSupply,
+  editSupply,
+  deleteSupply,
+  addStock,
+};
