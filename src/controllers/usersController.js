@@ -38,23 +38,23 @@ const getUserById = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   try {
-    const { password, name, lastName, ...datosUsuario } = req.body;
+    const { password, name, lastName, ...userData } = req.body;
 
     const userName = await User.generateUniqueUserName(name, lastName);
 
     const passwordLimpio = password?.trim() || "";
     const { salt, passwordHash } = User.generateSafePassword(passwordLimpio);
 
-    const nuevoUsuario = new User({
+    const newUser = new User({
       userName,
       name,
       lastName,
-      ...datosUsuario,
+      ...userData,
       salt,
       passwordHash,
     });
 
-    await nuevoUsuario.save();
+    await newUser.save();
 
     return sendSuccess(res, 201, "Usuario creado con éxito", { userName });
   } catch (error) {
@@ -77,8 +77,10 @@ const editUser = async (req, res, next) => {
       );
     }
 
-    const nameChanged = userData.name != user.name;
-    const lastNameChanged = userData.lastName != user.lastName;
+    const nameChanged =
+      userData.name !== undefined && userData.name !== user.name;
+    const lastNameChanged =
+      userData.lastName !== undefined && userData.lastName !== user.lastName;
 
     if (nameChanged || lastNameChanged) {
       const newName = userData.name || user.name;
@@ -95,7 +97,14 @@ const editUser = async (req, res, next) => {
       userData.passwordHash = passwordHash;
     }
 
-    Object.assign(user, userData);
+    user.set(userData);
+
+    if (!user.isModified()) {
+      return sendSuccess(res, 200, "No se detectaron cambios para actualizar", {
+        userName: user.userName,
+      });
+    }
+
     await user.save();
 
     return sendSuccess(res, 200, "Usuario actualizado", {

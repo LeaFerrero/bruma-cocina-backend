@@ -1,7 +1,7 @@
 import express from "express";
 import { validateUser } from "../middlewares/validators/validateUser.js";
 import { protectRoute, verifyRole } from "../middlewares/auth.js";
-import ROLES from "../utils/roles.js";
+import { ROLES } from "../constants/roles.js";
 
 import {
   getUsers,

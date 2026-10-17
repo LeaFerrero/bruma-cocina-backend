@@ -1,4 +1,4 @@
-import { ERROR_CODES } from "./errorCodes.js";
+import ERROR_CODES from "./errorCodes.js";
 
 const KNOWN_ERRORS = Object.freeze({
   CastError: {

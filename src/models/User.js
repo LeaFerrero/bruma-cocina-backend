@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
-import ROLES from "../utils/roles.js";
+import { VALID_ROLES } from "../constants/roles.js";
 import crypto from "node:crypto";
-
-const roles = Object.values(ROLES);
 
 const userSchema = new mongoose.Schema(
   {
@@ -23,7 +21,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "El rol es obligatorio"],
       enum: {
-        values: roles,
+        values: VALID_ROLES,
         message: "{VALUE} no es un rol válido para el sistema",
       },
       trim: true,
@@ -64,12 +62,12 @@ userSchema.statics.generateUniqueUserName = async function (name, lastName) {
   const baseUserName = `${name}.${lastName}`.toLowerCase();
   let finalUserName = baseUserName;
   let counter = 1;
-  let user = await User.findOne({ userName: finalUserName });
+  let user = await this.findOne({ userName: finalUserName });
 
   while (user) {
     finalUserName = `${baseUserName}.${counter}`;
     counter++;
-    user = await User.findOne({ userName: finalUserName });
+    user = await this.findOne({ userName: finalUserName });
   }
 
   return finalUserName;

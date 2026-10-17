@@ -5,4 +5,6 @@ const ROLES = Object.freeze({
   STOCK: "stock",
 });
 
-export default ROLES;
+const VALID_ROLES = Object.values(ROLES);
+
+export { ROLES, VALID_ROLES };
