@@ -134,7 +134,7 @@ const addStock = async (req, res, next) => {
         );
       }
 
-      supply.currentStock += item.quantity;
+      supply.currentStock += parseFloat(item.quantity);
 
       await supply.save();
 

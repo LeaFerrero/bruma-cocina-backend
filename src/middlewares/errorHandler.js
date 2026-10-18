@@ -17,6 +17,16 @@ const errorHandler = (err, req, res, next) => {
   let errorCode =
     knownError?.errorCode || err.errorCode || ERROR_CODES.INTERNAL_SERVER_ERROR;
 
+  if (err.code === 11000) {
+    const duplicatedField = Object.keys(err.keyValue)[0];
+    const duplicatedValue = err.keyValue[duplicatedField];
+
+    statusCode = 400;
+    status = "fail";
+    message = `El valor "${duplicatedValue}" ya está registrado.`;
+    errorCode = "DUPLICATE_KEY_ERROR"; // O agregalo a tu ERROR_CODES y llamalo desde ahí
+  }
+
   return sendError(res, statusCode, status, message, errorCode, details);
 };
 

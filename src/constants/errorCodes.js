@@ -5,8 +5,9 @@ const ERROR_CODES = Object.freeze({
   TOKEN_EXPIRED: "TOKEN_EXPIRED",
   INVALID_TOKEN: "INVALID_TOKEN",
 
-  // Usuarios
-  USER_NOT_FOUND: "USER_NOT_FOUND",
+  // Base de Datos
+  DUPLICATE_KEY_ERROR: "DUPLICATE_KEY_ERROR",
+  NOT_FOUND: "NOT_FOUND", // Genérico para cualquier entidad que no exista
 
   // Validaciones y Generales
   BAD_REQUEST: "BAD_REQUEST",

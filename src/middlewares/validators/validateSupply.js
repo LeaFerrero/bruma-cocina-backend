@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 import validateFields from "../validateFields.js";
+import { parseDecimal } from "../../utils/parsers.js";
 
 const validateSupply = [
   body("name")
@@ -16,29 +17,23 @@ const validateSupply = [
   body("price")
     .notEmpty()
     .withMessage("El precio es obligatorio.")
-    .replace(",", ".")
+    .customSanitizer((value) => parseDecimal(value, 2))
     .isFloat({ min: 0 })
-    .withMessage("El precio no puede ser negativo.")
-    .isDecimal({ decimal_digits: "0,2" })
-    .withMessage("El precio debe tener un máximo de 2 decimales."),
+    .withMessage("El precio no puede ser negativo."),
 
   body("currentStock")
     .notEmpty()
     .withMessage("El stock actual es obligatorio.")
-    .replace(",", ".")
+    .customSanitizer((value) => parseDecimal(value, 3))
     .isFloat({ min: 0 })
-    .withMessage("El stock actual no puede ser negativo.")
-    .isDecimal({ decimal_digits: "0,3" })
-    .withMessage("El stock actual debe tener un máximo de 3 decimales."),
+    .withMessage("El stock actual no puede ser negativo."),
 
   body("minStock")
     .notEmpty()
     .withMessage("El stock mínimo es obligatorio.")
-    .replace(",", ".")
+    .customSanitizer((value) => parseDecimal(value, 3))
     .isFloat({ min: 0 })
-    .withMessage("El stock mínimo no puede ser negativo.")
-    .isDecimal({ decimal_digits: "0,3" })
-    .withMessage("El stock mínimo debe tener un máximo de 3 decimales."),
+    .withMessage("El stock mínimo no puede ser negativo."),
 
   validateFields,
 ];
