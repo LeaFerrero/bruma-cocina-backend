@@ -1,6 +1,6 @@
 const UNITS = Object.freeze({
   KG: "kg",
-  L: "l",
+  L: "L",
   U: "u",
 });
 

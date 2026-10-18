@@ -6,7 +6,7 @@ const validateAddStock = [
     .isArray({ min: 1 })
     .withMessage("Debe enviar una lista de insumos con al menos un ítem."),
 
-  body("items.*.id")
+  body("items.*._id")
     .isMongoId()
     .withMessage("Uno o más insumos tienen un ID inválido."),
 

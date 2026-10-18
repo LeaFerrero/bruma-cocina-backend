@@ -24,7 +24,7 @@ const errorHandler = (err, req, res, next) => {
     statusCode = 400;
     status = "fail";
     message = `El valor "${duplicatedValue}" ya está registrado.`;
-    errorCode = "DUPLICATE_KEY_ERROR"; // O agregalo a tu ERROR_CODES y llamalo desde ahí
+    errorCode = "DUPLICATE_KEY_ERROR";
   }
 
   return sendError(res, statusCode, status, message, errorCode, details);

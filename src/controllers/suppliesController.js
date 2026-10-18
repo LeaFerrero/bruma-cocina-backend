@@ -5,11 +5,11 @@ import ERROR_CODES from "../constants/errorCodes.js";
 
 const getSupplies = async (req, res, next) => {
   try {
-    const activeSupplys = await Supply.find({
+    const activeSupplies = await Supply.find({
       status: "activo",
     });
 
-    return sendSuccess(res, 200, "Insumos listados con éxito", activeSupplys);
+    return sendSuccess(res, 200, "Insumos listados con éxito", activeSupplies);
   } catch (error) {
     next(error);
   }
@@ -120,28 +120,42 @@ const addStock = async (req, res, next) => {
       );
     }
 
-    const updateSupplies = [];
+    const errors = {};
+    const suppliesToUpdate = [];
 
-    for (const item of items) {
-      const supply = await Supply.findById(item.id);
+    for (let i = 0; i < items.length; i++) {
+      const supply = await Supply.findById(items[i]._id);
 
       if (!supply || supply.status === "eliminado") {
-        throw new AppError(
-          "Insumo no encontrado",
-          404,
-          null,
-          ERROR_CODES.NOT_FOUND || "NOT_FOUND",
-        );
+        errors[`${i}._id`] =
+          `El insumo "${items[i].name || items[i]._id}" no existe o fue eliminado.`;
+      } else {
+        suppliesToUpdate.push({
+          document: supply,
+          quantityToAdd: parseFloat(items[i].quantity),
+        });
       }
+    }
 
-      supply.currentStock += parseFloat(item.quantity);
+    if (Object.keys(errors).length > 0) {
+      throw new AppError(
+        "Algunos insumos de la lista no son válidos.",
+        404,
+        errors,
+        ERROR_CODES.NOT_FOUND || "NOT_FOUND",
+      );
+    }
 
-      await supply.save();
+    const updateSupplies = [];
+
+    for (const { document, quantityToAdd } of suppliesToUpdate) {
+      document.currentStock += quantityToAdd;
+      await document.save();
 
       updateSupplies.push({
-        id: supply._id,
-        name: supply.name,
-        currentStock: supply.currentStock,
+        id: document._id,
+        name: document.name,
+        currentStock: document.currentStock,
       });
     }
 
