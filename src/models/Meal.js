@@ -53,6 +53,12 @@ const mealSchema = mongoose.Schema(
       },
     },
 
+    currtentStock: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
     status: {
       type: String,
       default: "activo",
