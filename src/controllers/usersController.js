@@ -38,25 +38,29 @@ const getUserById = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   try {
-    const { password, name, lastName, ...userData } = req.body;
+    const { name, lastName, role, password } = req.body;
 
     const userName = await User.generateUniqueUserName(name, lastName);
 
     const passwordLimpio = password?.trim() || "";
     const { salt, passwordHash } = User.generateSafePassword(passwordLimpio);
 
-    const newUser = new User({
+    const newUser = await User.create({
       userName,
       name,
       lastName,
-      ...userData,
+      role,
       salt,
       passwordHash,
     });
 
-    await newUser.save();
+    const userResponse = newUser.toObject();
+    delete userResponse.passwordHash;
+    delete userResponse.salt;
 
-    return sendSuccess(res, 201, "Usuario creado con éxito", { userName });
+    return sendSuccess(res, 201, "Usuario creado con éxito", {
+      user: userResponse,
+    });
   } catch (error) {
     next(error);
   }
@@ -64,7 +68,7 @@ const createUser = async (req, res, next) => {
 
 const editUser = async (req, res, next) => {
   try {
-    const { password, ...userData } = req.body;
+    const { password, name, lastName, role } = req.body;
 
     const user = await User.findById(req.params.id);
 
@@ -77,38 +81,36 @@ const editUser = async (req, res, next) => {
       );
     }
 
-    const nameChanged =
-      userData.name !== undefined && userData.name !== user.name;
+    const nameChanged = name !== undefined && name !== user.name;
     const lastNameChanged =
-      userData.lastName !== undefined && userData.lastName !== user.lastName;
+      lastName !== undefined && lastName !== user.lastName;
 
     if (nameChanged || lastNameChanged) {
-      const newName = userData.name || user.name;
-      const newLastName = userData.lastName || user.lastName;
-      userData.userName = await User.generateUniqueUserName(
-        newName,
-        newLastName,
-      );
+      const newName = name || user.name;
+      const newLastName = lastName || user.lastName;
+      user.userName = await User.generateUniqueUserName(newName, newLastName);
     }
+
+    if (name !== undefined) user.name = name;
+    if (lastName !== undefined) user.lastName = lastName;
+    if (role !== undefined) user.role = role;
 
     if (password && password.trim() !== "") {
       const { salt, passwordHash } = User.generateSafePassword(password.trim());
-      userData.salt = salt;
-      userData.passwordHash = passwordHash;
+      user.salt = salt;
+      user.passwordHash = passwordHash;
     }
-
-    user.set(userData);
 
     if (!user.isModified()) {
       return sendSuccess(res, 200, "No se detectaron cambios para actualizar", {
-        userName: user.userName,
+        user: user,
       });
     }
 
     await user.save();
 
     return sendSuccess(res, 200, "Usuario actualizado", {
-      userName: user.userName,
+      user: user,
     });
   } catch (error) {
     next(error);
@@ -131,7 +133,9 @@ const deleteUser = async (req, res, next) => {
     user.status = "eliminado";
     await user.save();
 
-    return sendSuccess(res, 200, "Usuario eliminado con éxito");
+    return sendSuccess(res, 200, "Usuario eliminado con éxito", {
+      user: user,
+    });
   } catch (error) {
     next(error);
   }

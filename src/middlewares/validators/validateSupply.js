@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import validateFields from "../validateFields.js";
+import { validateFields } from "../validateFields.js";
 import { parseDecimal } from "../../utils/parsers.js";
 
 const validateSupply = [
@@ -7,8 +7,8 @@ const validateSupply = [
     .trim()
     .notEmpty()
     .withMessage("El nombre es obligatorio.")
-    .isLength({ min: 2 })
-    .withMessage("El nombre debe tener al menos 2 caracteres."),
+    .isLength({ min: 2, max: 50 })
+    .withMessage("El nombre debe tener entre 2 y 50 caracteres."),
 
   body("unit")
     .notEmpty()
@@ -18,8 +18,8 @@ const validateSupply = [
     .notEmpty()
     .withMessage("El precio es obligatorio.")
     .customSanitizer((value) => parseDecimal(value, 2))
-    .isFloat({ min: 0 })
-    .withMessage("El precio no puede ser negativo."),
+    .isFloat({ min: 0.01 })
+    .withMessage("El precio no puede ser negativo o cero."),
 
   body("currentStock")
     .notEmpty()

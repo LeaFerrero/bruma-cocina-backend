@@ -23,4 +23,4 @@ const validateFields = (req, res, next) => {
   next();
 };
 
-export default validateFields;
+export { validateFields };

@@ -36,16 +36,19 @@ const getSupplyById = async (req, res, next) => {
 
 const createSupply = async (req, res, next) => {
   try {
-    const { ...supplyData } = req.body;
+    const { name, price, unit, currentStock, minStock, category } = req.body;
 
-    const newSupply = new Supply({
-      ...supplyData,
+    const newSupply = await Supply.create({
+      name,
+      price,
+      unit,
+      currentStock,
+      minStock,
+      category,
     });
 
-    await newSupply.save();
-
     return sendSuccess(res, 201, "Insumo creado con éxito", {
-      supplyName: newSupply.name,
+      supply: newSupply,
     });
   } catch (error) {
     next(error);
@@ -54,7 +57,7 @@ const createSupply = async (req, res, next) => {
 
 const editSupply = async (req, res, next) => {
   try {
-    const { ...supplyData } = req.body;
+    const { name, price, unit, currentStock, minStock, category } = req.body;
 
     const supply = await Supply.findById(req.params.id);
 
@@ -67,18 +70,23 @@ const editSupply = async (req, res, next) => {
       );
     }
 
-    supply.set(supplyData);
+    if (name !== undefined) supply.name = name;
+    if (price !== undefined) supply.price = price;
+    if (unit !== undefined) supply.unit = unit;
+    if (currentStock !== undefined) supply.currentStock = currentStock;
+    if (minStock !== undefined) supply.minStock = minStock;
+    if (category !== undefined) supply.category = category;
 
     if (!supply.isModified()) {
       return sendSuccess(res, 200, "No se detectaron cambios para actualizar", {
-        supplyName: supply.name,
+        supply: supply,
       });
     }
 
     await supply.save();
 
     return sendSuccess(res, 200, "Insumo actualizado", {
-      supplyName: supply.name,
+      supply: supply,
     });
   } catch (error) {
     next(error);
@@ -101,7 +109,9 @@ const deleteSupply = async (req, res, next) => {
     supply.status = "eliminado";
     await supply.save();
 
-    return sendSuccess(res, 200, "Insumo eliminado con éxito");
+    return sendSuccess(res, 200, "Insumo eliminado con éxito", {
+      supply: supply,
+    });
   } catch (error) {
     next(error);
   }

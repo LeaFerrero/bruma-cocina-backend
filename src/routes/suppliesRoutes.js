@@ -1,6 +1,6 @@
 import express from "express";
 import { validateSupply } from "../middlewares/validators/validateSupply.js";
-import validateAddStock from "../middlewares/validators/validateAddStock.js";
+import { validateAddStock } from "../middlewares/validators/validateAddStock.js";
 import { ROLES } from "../constants/roles.js";
 import {
   getSupplies,

@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import validateFields from "../validateFields.js";
+import { validateFields } from "../validateFields.js";
 
 const validateAddStock = [
   body("items")
@@ -14,12 +14,12 @@ const validateAddStock = [
     .notEmpty()
     .withMessage("La cantidad es obligatoria")
     .replace(",", ".")
-    .isFloat({ min: 0 })
-    .withMessage("La cantidad no puede ser negativa.")
+    .isFloat({ min: 0.001 })
+    .withMessage("La cantidad tiene que ser mayor a 0")
     .isDecimal({ decimal_digits: "0,3" })
     .withMessage("La cantidad debe tener un máximo de 3 decimales."),
 
   validateFields,
 ];
 
-export default validateAddStock;
+export { validateAddStock };

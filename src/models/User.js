@@ -7,16 +7,19 @@ const userSchema = new mongoose.Schema(
     userName: {
       type: String,
     },
+
     name: {
       type: String,
       required: [true, "El nombre es obligatorio"],
       trim: true,
     },
+
     lastName: {
       type: String,
       required: [true, "El apellido es obligatorio"],
       trim: true,
     },
+
     role: {
       type: String,
       required: [true, "El rol es obligatorio"],
@@ -26,14 +29,17 @@ const userSchema = new mongoose.Schema(
       },
       trim: true,
     },
+
     passwordHash: {
       type: String,
       required: true,
     },
+
     salt: {
       type: String,
       required: true,
     },
+
     status: {
       type: String,
       default: "activo",
