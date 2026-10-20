@@ -19,13 +19,15 @@ const validateMeal = [
     .withMessage("El precio no puede ser negativo o cero."),
 
   body("category")
+    .isArray({ min: 1 })
+    .withMessage("Debes enviar al menos una categoría en formato de lista."),
+
+  body("category.*")
     .trim()
-    .notEmpty()
-    .withMessage("La categoría es obligatoria.")
     .isString()
-    .withMessage("La categoría debe ser un texto.")
+    .withMessage("Cada categoría debe ser un texto.")
     .isLength({ min: 3, max: 100 })
-    .withMessage("La categoría debe tener entre 3 y 100 caracteres."),
+    .withMessage("Cada categoría debe tener entre 3 y 100 caracteres."),
 
   body("description")
     .trim()
