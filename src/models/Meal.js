@@ -35,9 +35,10 @@ const mealSchema = mongoose.Schema(
     ingredients: {
       type: [
         {
-          _id: {
+          supply: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Supply",
+            required: [true, "El insumo es obligatorio"],
           },
           quantity: {
             type: Number,

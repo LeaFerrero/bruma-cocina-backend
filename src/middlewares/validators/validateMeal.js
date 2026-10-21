@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 import { validateFields } from "../validateFields.js";
+import { parseDecimal } from "../../utils/parsers.js";
 
 const validateMeal = [
   body("name")
