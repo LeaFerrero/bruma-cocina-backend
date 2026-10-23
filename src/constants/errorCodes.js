@@ -7,7 +7,10 @@ const ERROR_CODES = Object.freeze({
 
   // Base de Datos
   DUPLICATE_KEY_ERROR: "DUPLICATE_KEY_ERROR",
-  NOT_FOUND: "NOT_FOUND", // Genérico para cualquier entidad que no exista
+  NOT_FOUND: "NOT_FOUND",
+
+  // Inventario / Producción
+  INSUFFICIENT_STOCK: "INSUFFICIENT_STOCK",
 
   // Validaciones y Generales
   BAD_REQUEST: "BAD_REQUEST",

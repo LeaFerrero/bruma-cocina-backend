@@ -1,7 +1,8 @@
-import express, { response } from "express";
+import express from "express";
 import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
+import productionRoutes from "./routes/productionRoutes.js";
 import mealRoutes from "./routes/mealsRoutes.js";
 import suppliesRoutes from "./routes/suppliesRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api", authRoutes);
+app.use("/api/production", productionRoutes);
 app.use("/api/meals", mealRoutes);
 app.use("/api/supplies", suppliesRoutes);
 app.use("/api/users", usersRoutes);

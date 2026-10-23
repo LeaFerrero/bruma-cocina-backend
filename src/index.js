@@ -7,7 +7,15 @@ import app from "./app.js";
 const PORT = process.env.PORT || 3000;
 
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.FRONTEND_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
+
+app.set("io", io);
 
 await connectDB();
 

@@ -54,7 +54,7 @@ const mealSchema = mongoose.Schema(
       },
     },
 
-    currtentStock: {
+    currentStock: {
       type: Number,
       default: 0,
       min: 0,
