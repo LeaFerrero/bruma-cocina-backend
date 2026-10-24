@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import AppError from "../utils/AppError.js";
 import { sendSuccess } from "../utils/responses.js";
 import ERROR_CODES from "../constants/errorCodes.js";
+import { ROLES } from "../constants/roles.js";
 
 const getUsers = async (req, res, next) => {
   try {
@@ -127,6 +128,15 @@ const deleteUser = async (req, res, next) => {
         404,
         null,
         ERROR_CODES.NOT_FOUND || "NOT_FOUND",
+      );
+    }
+
+    if (user.role === ROLES.ADMIN) {
+      throw new AppError(
+        "No está permitido eliminar cuentas de Administrador",
+        403,
+        null,
+        ERROR_CODES.FORBIDDEN,
       );
     }
 
