@@ -12,10 +12,11 @@ import {
 
 const router = express.Router();
 
+router.get("/", getMeals);
+
 router.use(protectRoute);
 router.use(verifyRole(ROLES.ADMIN, ROLES.STOCK));
 
-router.get("/", getMeals);
 router.get("/:id", getMealById);
 router.post("/", validateMeal, createMeal);
 router.patch("/:id", validateMeal, editMeal);

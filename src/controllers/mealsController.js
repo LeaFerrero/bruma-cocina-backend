@@ -7,7 +7,7 @@ const getMeals = async (req, res, next) => {
   try {
     const activeMeals = await Meal.find({
       status: "activo",
-    });
+    }).sort({ name: 1 });
 
     return sendSuccess(res, 200, "Viandas listados con éxito", activeMeals);
   } catch (error) {
@@ -39,6 +39,7 @@ const getMealById = async (req, res, next) => {
     next(error);
   }
 };
+
 const createMeal = async (req, res, next) => {
   try {
     const { name, price, category, description, ingredients } = req.body;

@@ -7,7 +7,7 @@ const getSupplies = async (req, res, next) => {
   try {
     const activeSupplies = await Supply.find({
       status: "activo",
-    });
+    }).sort({ name: 1 });
 
     return sendSuccess(res, 200, "Insumos listados con éxito", activeSupplies);
   } catch (error) {

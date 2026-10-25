@@ -28,8 +28,9 @@ const mealSchema = mongoose.Schema(
     description: {
       type: String,
       required: [true, "La descripción es obligatoria"],
-      min: [10, "La descripción debe tener al menos 10 caracteres"],
-      max: [250, "La descripción debe como máximo 250 caracteres"],
+      minlength: [10, "La descripción debe tener al menos 10 caracteres"],
+      maxlength: [250, "La descripción debe tener como máximo 250 caracteres"],
+      trim: true,
     },
 
     ingredients: {
@@ -48,6 +49,7 @@ const mealSchema = mongoose.Schema(
           },
         },
       ],
+
       validate: {
         validator: (value) => Array.isArray(value) && value.length > 0,
         message: "Debe agregar al menos un ingrediente a la receta",

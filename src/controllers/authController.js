@@ -40,7 +40,7 @@ const login = async (req, res, next) => {
     return sendSuccess(res, 200, "Inicio de sesión exitoso", {
       user: {
         id: user._id,
-        rol: user.role,
+        role: user.role,
         userName: user.userName,
       },
     });
@@ -50,7 +50,12 @@ const login = async (req, res, next) => {
 };
 
 const logout = async (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    path: "/",
+  });
 
   return sendSuccess(res, 200, "Sesión cerrada correctamente");
 };

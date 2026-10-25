@@ -6,7 +6,7 @@ const validateMeal = [
   body("name")
     .trim()
     .notEmpty()
-    .withMessage("El nombre de la vianda es obligatorio.")
+    .withMessage("El nombre es obligatorio.")
     .isString()
     .withMessage("El nombre debe ser un texto.")
     .isLength({ min: 2, max: 50 })
@@ -17,18 +17,18 @@ const validateMeal = [
     .withMessage("El precio es obligatorio.")
     .customSanitizer((value) => parseDecimal(value, 2))
     .isFloat({ min: 0.01 })
-    .withMessage("El precio no puede ser negativo o cero."),
+    .withMessage("El precio debe ser mayor a 0"),
 
   body("category")
     .isArray({ min: 1 })
-    .withMessage("Debes enviar al menos una categoría en formato de lista."),
+    .withMessage("Debe ingresar al menos una categoría válida"),
 
   body("category.*")
     .trim()
     .isString()
     .withMessage("Cada categoría debe ser un texto.")
-    .isLength({ min: 3, max: 100 })
-    .withMessage("Cada categoría debe tener entre 3 y 100 caracteres."),
+    .isLength({ min: 1 })
+    .withMessage("La categoría no puede estar vacía."),
 
   body("description")
     .trim()
@@ -40,12 +40,21 @@ const validateMeal = [
     .withMessage("La descripción debe tener entre 10 y 250 caracteres."),
 
   body("ingredients")
-    .notEmpty()
-    .withMessage("Los ingredientes son obligatorios.")
     .isArray({ min: 1 })
-    .withMessage(
-      "Debe incluir al menos un ingrediente en formato de lista (array).",
-    ),
+    .withMessage("Debe agregar al menos un ingrediente a la receta"),
+
+  body("ingredients.*._id")
+    .notEmpty()
+    .withMessage("Falta la referencia al insumo")
+    .isString()
+    .withMessage("El ID del insumo debe ser texto"),
+
+  body("ingredients.*.quantity")
+    .notEmpty()
+    .withMessage("La cantidad es obligatoria")
+    .customSanitizer((value) => parseDecimal(value, 3))
+    .isFloat({ min: 0.001 })
+    .withMessage("La cantidad debe ser mayor a 0"),
 
   validateFields,
 ];
