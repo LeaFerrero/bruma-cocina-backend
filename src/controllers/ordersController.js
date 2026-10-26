@@ -4,22 +4,30 @@ import AppError from "../utils/AppError.js";
 import { ORDER_STATUS } from "../constants/orderStatus.js";
 import { sendSuccess } from "../utils/responses.js";
 import { generateOrderCode } from "../utils/generateOrderCode.js";
+import { getBusinessDate } from "../utils/dates.js";
 import ERROR_CODES from "../constants/errorCodes.js";
 
 const getOrders = async (req, res, next) => {
   try {
-    const { status } = req.query;
+    const { orderStatus, paymentStatus, date } = req.query;
 
     const filter = {};
-    if (status) {
-      filter.orderStatus = status;
+
+    if (orderStatus) {
+      filter.orderStatus = orderStatus;
+    }
+
+    if (paymentStatus) {
+      filter.paymentStatus = paymentStatus;
+    }
+
+    if (date) {
+      filter.dateOnly = date;
     }
 
     const orders = await Order.find(filter).sort({ createdAt: 1 }).lean();
 
-    return sendSuccess(res, 200, "Comandas listadas con éxito", {
-      data: orders,
-    });
+    return sendSuccess(res, 200, "Comandas listadas con éxito", orders);
   } catch (error) {
     next(error);
   }
@@ -99,7 +107,7 @@ const createOrder = async (req, res, next) => {
 
       validatedMeals.push({
         meal: mealDB._id,
-        mealName: mealDB.name,
+        name: mealDB.name,
         price: mealDB.price,
         quantity: item.quantity,
       });
@@ -130,6 +138,7 @@ const createOrder = async (req, res, next) => {
       address,
       meals: validatedMeals,
       total: calculatedTotal,
+      dateOnly: getBusinessDate(),
     });
 
     const io = req.app.get("io");
@@ -166,9 +175,7 @@ const dispatchOrder = async (req, res, next) => {
       io.emit("order-updated", order);
     }
 
-    return sendSuccess(res, 200, "El pedido ha sido despachado", {
-      data: order,
-    });
+    return sendSuccess(res, 200, "El pedido ha sido despachado", order);
   } catch (error) {
     next(error);
   }
@@ -205,9 +212,7 @@ const cancelOrder = async (req, res, next) => {
       io.emit("order-updated", order);
     }
 
-    return sendSuccess(res, 200, "El pedido ha sido cancelado", {
-      data: order,
-    });
+    return sendSuccess(res, 200, "El pedido ha sido cancelado", order);
   } catch (error) {
     next(error);
   }

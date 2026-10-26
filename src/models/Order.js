@@ -46,7 +46,7 @@ const orderSchema = new mongoose.Schema(
             required: [true, "La vianda es obligatoria"],
           },
 
-          mealName: {
+          name: {
             type: String,
             required: [true, "El nombre de la vianda es obligatorio"],
           },
@@ -95,6 +95,12 @@ const orderSchema = new mongoose.Schema(
         message: "{VALUE} no es un estado de pago válido para el sistema",
       },
       default: PAYMENT_STATUS.PENDIENTE,
+    },
+
+    dateOnly: {
+      type: String,
+      required: [true, "La fecha de la comanda es obligatoria"],
+      index: true,
     },
   },
   {
