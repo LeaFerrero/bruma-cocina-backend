@@ -3,6 +3,7 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import productionRoutes from "./routes/productionRoutes.js";
 import mealRoutes from "./routes/mealsRoutes.js";
 import suppliesRoutes from "./routes/suppliesRoutes.js";
