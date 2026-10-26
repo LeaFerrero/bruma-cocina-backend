@@ -1,11 +1,11 @@
 import Payment from "../models/Payment.js";
 import Order from "../models/Order.js";
 import { sendSuccess } from "../utils/responses.js";
+import { PAYMENT_STATUS } from "../constants/paymentStatus.js";
 
-const createPayment = async (req, res) => {
+const createPayment = async (req, res, next) => {
   try {
-    const { order, totalAmount, paymentMethod, paymentStatus, paidAt } =
-      req.body;
+    const { order, totalAmount, paymentMethod, paidAt } = req.body;
 
     const orderExists = await Order.findById(order);
     if (!orderExists) {
@@ -14,6 +14,8 @@ const createPayment = async (req, res) => {
         message: "La orden especificada no existe",
       });
     }
+
+    const paymentStatus = PAYMENT_STATUS.PAGADO;
 
     const newPayment = new Payment({
       order,
