@@ -28,6 +28,11 @@ const createPayment = async (req, res) => {
     orderExists.paymentStatus = paymentStatus;
     await orderExists.save();
 
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("order-updated", order);
+    }
+
     return sendSuccess(res, 200, "Pago registrado correctamente", savedPayment);
   } catch (error) {
     next(error);

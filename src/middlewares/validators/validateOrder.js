@@ -31,6 +31,11 @@ const validateOrder = [
     .isLength({ min: 2, max: 100 })
     .withMessage("La dirección debe tener entre 2 y 100 caracteres."),
 
+  body("notes")
+    .trim()
+    .isLength({ max: 250 })
+    .withMessage("Las notas pueden tener como máximo 250 caracteres."),
+
   body("meals")
     .isArray({ min: 1 })
     .withMessage(

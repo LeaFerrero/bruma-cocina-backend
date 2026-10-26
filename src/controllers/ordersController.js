@@ -69,7 +69,7 @@ const getOrderById = async (req, res, next) => {
 
 const createOrder = async (req, res, next) => {
   try {
-    const { name, lastName, phone, address, meals } = req.body;
+    const { name, lastName, phone, address, notes, meals } = req.body;
 
     if (!meals || meals.length === 0) {
       throw new AppError(
@@ -136,6 +136,7 @@ const createOrder = async (req, res, next) => {
       lastName,
       phone,
       address,
+      notes,
       meals: validatedMeals,
       total: calculatedTotal,
       dateOnly: getBusinessDate(),
