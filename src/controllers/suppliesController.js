@@ -169,10 +169,10 @@ const addStock = async (req, res, next) => {
       });
     }
 
-    const io = req.app.get("io");
-    if (io) {
-      io.emit("supplies-updated");
-    }
+      const io = req.app.get("io");
+      if (io) {
+        io.emit("supplies-updated");
+      }
 
     return sendSuccess(res, 200, "Stock ingresado con éxito", updateSupplies);
   } catch (error) {

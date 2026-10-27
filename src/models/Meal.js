@@ -56,6 +56,11 @@ const mealSchema = mongoose.Schema(
       },
     },
 
+    image: {
+      type: String,
+      trim: true,
+    },
+
     currentStock: {
       type: Number,
       default: 0,

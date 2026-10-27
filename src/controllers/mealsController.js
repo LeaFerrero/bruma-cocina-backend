@@ -42,34 +42,28 @@ const getMealById = async (req, res, next) => {
 
 const createMeal = async (req, res, next) => {
   try {
-    const { name, price, category, description, ingredients } = req.body;
-
-    const formattedIngredients = ingredients.map((ingredient) => ({
-      supply: ingredient._id,
-      quantity: ingredient.quantity,
-    }));
+    const { name, price, description, category, ingredients } = req.body;
+    const imagePath = req.file ? req.file.filename : undefined;
 
     const newMeal = new Meal({
       name,
       price,
-      category,
       description,
-      ingredients: formattedIngredients,
+      category,
+      ingredients,
+      image: imagePath,
     });
 
     await newMeal.save();
 
-    return sendSuccess(res, 201, "Vianda creada con éxito", {
-      meal: newMeal,
-    });
+    return sendSuccess(res, 201, "Vianda creada con éxito", { meal: newMeal });
   } catch (error) {
     next(error);
   }
 };
-
 const editMeal = async (req, res, next) => {
   try {
-    const { name, price, category, description, ingredients } = req.body;
+    const { name, price, description, category, ingredients } = req.body;
 
     const meal = await Meal.findById(req.params.id);
 
@@ -86,14 +80,30 @@ const editMeal = async (req, res, next) => {
     if (price !== undefined) meal.price = price;
     if (description !== undefined) meal.description = description;
 
+    if (req.file) {
+      if (meal.image) {
+        try {
+          // ✅ Apuntamos correctamente a la carpeta uploads para borrar el archivo viejo
+          await fs.unlink(path.join("uploads", meal.image));
+        } catch (err) {
+          console.error("No se pudo borrar la imagen anterior:", err.message);
+        }
+      }
+      // ✅ Guardamos únicamente el nombre limpio del archivo nuevo
+      meal.image = req.file.filename;
+    }
+
     if (category !== undefined) {
+      const parsedCategory =
+        typeof category === "string" ? JSON.parse(category) : category;
+
       const formattedCategory =
-        typeof category === "string"
-          ? category
+        typeof parsedCategory === "string"
+          ? parsedCategory
               .split(",")
               .map((cat) => cat.trim())
               .filter((cat) => cat !== "")
-          : category;
+          : parsedCategory;
 
       const currentCat = Array.isArray(meal.category)
         ? meal.category
@@ -105,7 +115,10 @@ const editMeal = async (req, res, next) => {
     }
 
     if (ingredients !== undefined) {
-      const formattedIncomingIngredients = ingredients.map((item) => ({
+      const parsedIngredients =
+        typeof ingredients === "string" ? JSON.parse(ingredients) : ingredients;
+
+      const formattedIncomingIngredients = parsedIngredients.map((item) => ({
         supply: (item._id || item.supply)?.toString(),
         quantity: Number(item.quantity),
       }));

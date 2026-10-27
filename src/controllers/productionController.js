@@ -7,11 +7,11 @@ import { parseDecimal } from "../utils/parsers.js";
 
 export const registerProduction = async (req, res, next) => {
   try {
-    const { items } = req.body;
+    const { meals } = req.body;
 
-    if (!items || items.length === 0) {
+    if (!meals || meals.length === 0) {
       throw new AppError(
-        "No se enviaron viandas para registrar producción.",
+        "La lista de viandas esta vacia.",
         400,
         null,
         ERROR_CODES.BAD_REQUEST,
@@ -20,7 +20,7 @@ export const registerProduction = async (req, res, next) => {
 
     const requiredIngredients = {};
 
-    for (const item of items) {
+    for (const item of meals) {
       const meal = await Meal.findById(item._id);
 
       if (!meal) {
@@ -80,7 +80,7 @@ export const registerProduction = async (req, res, next) => {
       });
     }
 
-    for (const item of items) {
+    for (const item of meals) {
       await Meal.findByIdAndUpdate(item._id, {
         $inc: { currentStock: item.quantity },
       });

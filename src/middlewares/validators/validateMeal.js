@@ -20,6 +20,16 @@ const validateMeal = [
     .withMessage("El precio debe ser mayor a 0"),
 
   body("category")
+    .customSanitizer((value) => {
+      if (typeof value === "string") {
+        try {
+          return JSON.parse(value);
+        } catch (e) {
+          return value;
+        }
+      }
+      return value;
+    })
     .isArray({ min: 1 })
     .withMessage("Debe ingresar al menos una categoría válida"),
 
@@ -40,10 +50,20 @@ const validateMeal = [
     .withMessage("La descripción debe tener entre 10 y 250 caracteres."),
 
   body("ingredients")
+    .customSanitizer((value) => {
+      if (typeof value === "string") {
+        try {
+          return JSON.parse(value);
+        } catch (e) {
+          return value;
+        }
+      }
+      return value;
+    })
     .isArray({ min: 1 })
     .withMessage("Debe agregar al menos un ingrediente a la receta"),
 
-  body("ingredients.*._id")
+  body("ingredients.*.supply")
     .notEmpty()
     .withMessage("Falta la referencia al insumo")
     .isString()

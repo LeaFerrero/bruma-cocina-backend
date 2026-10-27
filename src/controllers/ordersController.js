@@ -197,7 +197,7 @@ const cancelOrder = async (req, res, next) => {
       );
     }
 
-    if (order.orderStatus !== ORDER_STATUS.CANCELADO) {
+    if (order.orderStatus !== ORDER_STATUS.CANCELADO) { 
       for (const item of order.meals) {
         await Meal.findByIdAndUpdate(item.meal, {
           $inc: { currentStock: item.quantity },
