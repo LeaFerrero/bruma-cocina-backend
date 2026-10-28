@@ -2,6 +2,8 @@ import Meal from "../models/Meal.js";
 import AppError from "../utils/AppError.js";
 import { sendSuccess } from "../utils/responses.js";
 import ERROR_CODES from "../constants/errorCodes.js";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 const getMeals = async (req, res, next) => {
   try {
@@ -78,9 +80,13 @@ const createMeal = async (req, res, next) => {
 
     return sendSuccess(res, 201, "Vianda creada con éxito", { meal: newMeal });
   } catch (error) {
+    if (req.file) {
+      await fs.unlink(path.join("uploads", req.file.filename)).catch(() => {});
+    }
     next(error);
   }
 };
+
 const editMeal = async (req, res, next) => {
   try {
     const { name, price, description, category, ingredients } = req.body;
@@ -100,14 +106,9 @@ const editMeal = async (req, res, next) => {
     if (price !== undefined) meal.price = price;
     if (description !== undefined) meal.description = description;
 
+    let oldImage = null;
     if (req.file) {
-      if (meal.image) {
-        try {
-          await fs.unlink(path.join("uploads", meal.image));
-        } catch (err) {
-          console.error("No se pudo borrar la imagen anterior:", err.message);
-        }
-      }
+      oldImage = meal.image;
       meal.image = req.file.filename;
     }
 
@@ -162,10 +163,17 @@ const editMeal = async (req, res, next) => {
 
     await meal.save();
 
+    if (oldImage) {
+      await fs.unlink(path.join("uploads", oldImage)).catch(() => {});
+    }
+
     return sendSuccess(res, 200, "Vianda actualizada", {
       meal: meal,
     });
   } catch (error) {
+    if (req.file) {
+      await fs.unlink(path.join("uploads", req.file.filename)).catch(() => {});
+    }
     next(error);
   }
 };
