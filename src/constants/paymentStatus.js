@@ -1,8 +1,9 @@
 const PAYMENT_STATUS = Object.freeze({
-  PENDIENTE: "PENDIENTE",
-  PAGADO: "PAGADO",
-  REEMBOLSADO: "REEMBOLSADO",
-  FALLIDO: "FALLIDO",
+  PENDIENTE: "pendiente",
+  PAGADO: "pagado",
+  CANCELADO: "cancelado",
+  REEMBOLSADO: "reembolsado",
+  FALLIDO: "fallido",
 });
 
 const VALID_PAYMENT_STATUS = Object.values(PAYMENT_STATUS);

@@ -5,6 +5,7 @@ import { protectRoute, verifyRole } from "../middlewares/auth.js";
 import { ROLES } from "../constants/roles.js";
 import {
   getMeals,
+  getMealImages,
   getMealById,
   createMeal,
   editMeal,
@@ -15,6 +16,7 @@ import { upload } from "../middlewares/upload.js";
 const router = express.Router();
 
 router.get("/", getMeals);
+router.get("/images", getMealImages);
 
 router.use(protectRoute);
 router.use(verifyRole(ROLES.ADMIN, ROLES.STOCK));

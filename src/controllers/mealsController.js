@@ -15,6 +15,26 @@ const getMeals = async (req, res, next) => {
   }
 };
 
+const getMealImages = async (req, res, next) => {
+  try {
+    const activeMeals = await Meal.find({
+      status: "activo",
+    })
+      .select("title image")
+      .sort({ name: 1 })
+      .lean();
+
+    return sendSuccess(
+      res,
+      200,
+      "Imágenes de viandas obtenidas con éxito",
+      activeMeals,
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getMealById = async (req, res, next) => {
   try {
     const meal = await Meal.findById(req.params.id).populate({
@@ -83,13 +103,11 @@ const editMeal = async (req, res, next) => {
     if (req.file) {
       if (meal.image) {
         try {
-          // ✅ Apuntamos correctamente a la carpeta uploads para borrar el archivo viejo
           await fs.unlink(path.join("uploads", meal.image));
         } catch (err) {
           console.error("No se pudo borrar la imagen anterior:", err.message);
         }
       }
-      // ✅ Guardamos únicamente el nombre limpio del archivo nuevo
       meal.image = req.file.filename;
     }
 
@@ -176,4 +194,11 @@ const deleteMeal = async (req, res, next) => {
   }
 };
 
-export { getMeals, getMealById, createMeal, editMeal, deleteMeal };
+export {
+  getMeals,
+  getMealImages,
+  getMealById,
+  createMeal,
+  editMeal,
+  deleteMeal,
+};

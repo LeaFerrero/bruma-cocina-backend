@@ -1,7 +1,7 @@
 const ORDER_STATUS = Object.freeze({
-  PENDIENTE: "PENDIENTE",
-  DESPACHADO: "DESPACHADO",
-  CANCELADO: "CANCELADO",
+  PENDIENTE: "pendiente",
+  DESPACHADO: "despachado",
+  CANCELADO: "cancelado",
 });
 
 const VALID_ORDER_STATUS = Object.values(ORDER_STATUS);
