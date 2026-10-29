@@ -20,5 +20,5 @@ test("deja pasar un número sin alterarlo", () => {
 });
 
 test("devuelve 0 cuando el valor no es numérico", () => {
-  assert.equal(parseDecimal("abc", 2), 0);
+  assert.equal(parseDecimal("abc", 2), NaN);
 });

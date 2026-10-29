@@ -18,7 +18,7 @@ const login = async (req, res, next) => {
         "Usuario y/o contraseña incorrectos",
         401,
         null,
-        ERROR_CODES.UNAUTHORIZED || "UNAUTHORIZED",
+        ERROR_CODES.UNAUTHORIZED,
       );
     }
 
@@ -67,7 +67,7 @@ const verifySession = async (req, res, next) => {
         "No autorizado. Token no proporcionado.",
         401,
         null,
-        ERROR_CODES.UNAUTHORIZED || "UNAUTHORIZED",
+        ERROR_CODES.UNAUTHORIZED,
       );
     }
 
@@ -79,7 +79,7 @@ const verifySession = async (req, res, next) => {
         "Sesión inválida",
         401,
         null,
-        ERROR_CODES.UNAUTHORIZED || "UNAUTHORIZED",
+        ERROR_CODES.UNAUTHORIZED,
       );
     }
 
