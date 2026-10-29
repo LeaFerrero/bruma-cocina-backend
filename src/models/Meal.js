@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { parseDecimal } from "../utils/parsers.js";
+import { parseDecimal, parseInteger } from "../utils/parsers.js";
 
 const mealSchema = mongoose.Schema(
   {
@@ -9,6 +9,7 @@ const mealSchema = mongoose.Schema(
       unique: true,
       trim: true,
     },
+
     price: {
       type: Number,
       required: [true, "El precio es obligatiorio."],
@@ -65,6 +66,13 @@ const mealSchema = mongoose.Schema(
       type: Number,
       default: 0,
       min: 0,
+    },
+
+    minStock: {
+      type: Number,
+      required: [true, "El stock minimo es obligatorio"],
+      min: [0, "El stock minimo no puede ser negativo"],
+      set: (value) => parseInteger(value),
     },
 
     status: {

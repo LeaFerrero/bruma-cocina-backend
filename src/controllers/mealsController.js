@@ -64,16 +64,18 @@ const getMealById = async (req, res, next) => {
 
 const createMeal = async (req, res, next) => {
   try {
-    const { name, price, description, category, ingredients } = req.body;
+    const { name, price, minStock, category, description, ingredients } =
+      req.body;
     const imagePath = req.file ? req.file.filename : undefined;
 
     const newMeal = new Meal({
       name,
       price,
-      description,
+      minStock,
       category,
-      ingredients,
+      description,
       image: imagePath,
+      ingredients,
     });
 
     await newMeal.save();
@@ -89,7 +91,8 @@ const createMeal = async (req, res, next) => {
 
 const editMeal = async (req, res, next) => {
   try {
-    const { name, price, description, category, ingredients } = req.body;
+    const { name, price, minStock, category, description, ingredients } =
+      req.body;
 
     const meal = await Meal.findById(req.params.id);
 
@@ -104,6 +107,7 @@ const editMeal = async (req, res, next) => {
 
     if (name !== undefined) meal.name = name;
     if (price !== undefined) meal.price = price;
+    if (minStock !== undefined) meal.minStock = minStock;
     if (description !== undefined) meal.description = description;
 
     let oldImage = null;
@@ -156,9 +160,12 @@ const editMeal = async (req, res, next) => {
     }
 
     if (!meal.isModified()) {
-      return sendSuccess(res, 200, "No se detectaron cambios para actualizar", {
-        meal: meal,
-      });
+      return sendSuccess(
+        res,
+        200,
+        "No se detectaron cambios para actualizar",
+        meal,
+      );
     }
 
     await meal.save();
@@ -167,9 +174,7 @@ const editMeal = async (req, res, next) => {
       await fs.unlink(path.join("uploads", oldImage)).catch(() => {});
     }
 
-    return sendSuccess(res, 200, "Vianda actualizada", {
-      meal: meal,
-    });
+    return sendSuccess(res, 200, "Vianda actualizada", meal);
   } catch (error) {
     if (req.file) {
       await fs.unlink(path.join("uploads", req.file.filename)).catch(() => {});

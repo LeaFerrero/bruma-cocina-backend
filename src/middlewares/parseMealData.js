@@ -1,3 +1,6 @@
+import AppError from "../utils/AppError.js";
+import ERROR_CODES from "../constants/errorCodes.js";
+
 export const parseMealData = (req, res, next) => {
   if (req.body.mealData) {
     try {
@@ -5,6 +8,7 @@ export const parseMealData = (req, res, next) => {
 
       req.body.name = parsed.name;
       req.body.price = parsed.price;
+      req.body.minStock = parsed.minStock;
       req.body.description = parsed.description;
       req.body.category = parsed.category;
 
@@ -17,9 +21,14 @@ export const parseMealData = (req, res, next) => {
         req.body.ingredients = [];
       }
     } catch (error) {
-      return res
-        .status(400)
-        .json({ error: "El formato de mealData es inválido" });
+      return next(
+        new AppError(
+          "El formato de mealData es inválido",
+          400,
+          null,
+          ERROR_CODES.BAD_REQUEST,
+        ),
+      );
     }
   }
   next();

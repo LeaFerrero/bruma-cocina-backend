@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 import { validateFields } from "../validateFields.js";
-import { parseDecimal } from "../../utils/parsers.js";
+import { parseDecimal, parseInteger } from "../../utils/parsers.js";
 
 const validateMeal = [
   body("name")
@@ -18,6 +18,13 @@ const validateMeal = [
     .customSanitizer((value) => parseDecimal(value, 2))
     .isFloat({ min: 0.01 })
     .withMessage("El precio debe ser mayor a 0"),
+
+  body("minStock")
+    .notEmpty()
+    .withMessage("El stock mínimo es obligatorio.")
+    .customSanitizer((value) => parseInteger(value))
+    .isInt({ min: 1 })
+    .withMessage("El stock mínimo no puede ser 0 y debe ser un número entero."),
 
   body("category")
     .customSanitizer((value) => {

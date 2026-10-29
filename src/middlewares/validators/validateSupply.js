@@ -32,8 +32,8 @@ const validateSupply = [
     .notEmpty()
     .withMessage("El stock mínimo es obligatorio.")
     .customSanitizer((value) => parseDecimal(value, 3))
-    .isFloat({ min: 0 })
-    .withMessage("El stock mínimo no puede ser negativo."),
+    .isFloat({ min: 0.001 })
+    .withMessage("El stock mínimo no puede ser 0 y debe ser un número entero."),
 
   validateFields,
 ];

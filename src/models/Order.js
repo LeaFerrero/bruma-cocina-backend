@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { parseDecimal } from "../utils/parsers.js";
+import { parseDecimal, parseInteger } from "../utils/parsers.js";
 import { ORDER_STATUS, VALID_ORDER_STATUS } from "../constants/orderStatus.js";
 import {
   PAYMENT_STATUS,
@@ -68,6 +68,7 @@ const orderSchema = new mongoose.Schema(
             type: Number,
             required: [true, "La cantidad es obligatoria"],
             min: [1, "La cantidad tiene que ser mayor a 0"],
+            set: (value) => parseInteger(value),
           },
         },
       ],
