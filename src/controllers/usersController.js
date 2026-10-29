@@ -4,6 +4,13 @@ import { sendSuccess } from "../utils/responses.js";
 import ERROR_CODES from "../constants/errorCodes.js";
 import { ROLES } from "../constants/roles.js";
 
+const removeSensitiveData = (user) => {
+  const userResponse = user.toObject();
+  delete userResponse.passwordHash;
+  delete userResponse.salt;
+  return userResponse;
+};
+
 const getUsers = async (req, res, next) => {
   try {
     const activeUsers = await User.find({
@@ -18,9 +25,7 @@ const getUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).select(
-      "-passwordHash -salt",
-    );
+    const user = await User.findById(req.params.id);
 
     if (!user || user.status === "eliminado") {
       throw new AppError(
@@ -31,7 +36,9 @@ const getUserById = async (req, res, next) => {
       );
     }
 
-    return sendSuccess(res, 200, "Usuario encontrado", user);
+    return sendSuccess(res, 200, "Usuario encontrado", {
+      user: removeSensitiveData(user),
+    });
   } catch (error) {
     next(error);
   }
@@ -55,12 +62,8 @@ const createUser = async (req, res, next) => {
       passwordHash,
     });
 
-    const userResponse = newUser.toObject();
-    delete userResponse.passwordHash;
-    delete userResponse.salt;
-
     return sendSuccess(res, 201, "Usuario creado con éxito", {
-      user: userResponse,
+      user: removeSensitiveData(newUser),
     });
   } catch (error) {
     next(error);
@@ -104,14 +107,14 @@ const editUser = async (req, res, next) => {
 
     if (!user.isModified()) {
       return sendSuccess(res, 200, "No se detectaron cambios para actualizar", {
-        user: user,
+        user: removeSensitiveData(user),
       });
     }
 
     await user.save();
 
     return sendSuccess(res, 200, "Usuario actualizado", {
-      user: user,
+      user: removeSensitiveData(user),
     });
   } catch (error) {
     next(error);
@@ -144,7 +147,7 @@ const deleteUser = async (req, res, next) => {
     await user.save();
 
     return sendSuccess(res, 200, "Usuario eliminado con éxito", {
-      user: user,
+      user: removeSensitiveData(user),
     });
   } catch (error) {
     next(error);

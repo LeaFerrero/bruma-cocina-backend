@@ -22,7 +22,7 @@ const getMealImages = async (req, res, next) => {
     const activeMeals = await Meal.find({
       status: "activo",
     })
-      .select("title image")
+      .select("name image")
       .sort({ name: 1 })
       .lean();
 
@@ -56,7 +56,7 @@ const getMealById = async (req, res, next) => {
       quantity: ingredient.quantity,
     }));
 
-    return sendSuccess(res, 200, "Vianda encontrada", mealResponse);
+    return sendSuccess(res, 200, "Vianda encontrada", { meal: mealResponse });
   } catch (error) {
     next(error);
   }
@@ -160,12 +160,9 @@ const editMeal = async (req, res, next) => {
     }
 
     if (!meal.isModified()) {
-      return sendSuccess(
-        res,
-        200,
-        "No se detectaron cambios para actualizar",
-        meal,
-      );
+      return sendSuccess(res, 200, "No se detectaron cambios para actualizar", {
+        meal: meal,
+      });
     }
 
     await meal.save();
@@ -174,7 +171,7 @@ const editMeal = async (req, res, next) => {
       await fs.unlink(path.join("uploads", oldImage)).catch(() => {});
     }
 
-    return sendSuccess(res, 200, "Vianda actualizada", meal);
+    return sendSuccess(res, 200, "Vianda actualizada", { meal: meal });
   } catch (error) {
     if (req.file) {
       await fs.unlink(path.join("uploads", req.file.filename)).catch(() => {});

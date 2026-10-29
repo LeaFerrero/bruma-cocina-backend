@@ -1,5 +1,4 @@
 import User from "../models/User.js";
-import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import AppError from "../utils/AppError.js";
 import { sendSuccess } from "../utils/responses.js";
@@ -73,7 +72,16 @@ const verifySession = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded.id).select("-passwordHash -salt");
+
+    if (!user || user.status === "eliminado") {
+      throw new AppError(
+        "Sesión inválida",
+        401,
+        null,
+        ERROR_CODES.UNAUTHORIZED || "UNAUTHORIZED",
+      );
+    }
 
     return sendSuccess(res, 200, "Sesión validada", { isLogged: true, user });
   } catch (error) {

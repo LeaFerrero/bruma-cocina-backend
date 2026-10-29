@@ -28,7 +28,7 @@ const getSupplyById = async (req, res, next) => {
       );
     }
 
-    return sendSuccess(res, 200, "Insumo encontrado", supply);
+    return sendSuccess(res, 200, "Insumo encontrado", { supply: supply });
   } catch (error) {
     next(error);
   }
@@ -169,10 +169,10 @@ const addStock = async (req, res, next) => {
       });
     }
 
-      const io = req.app.get("io");
-      if (io) {
-        io.emit("supplies-updated");
-      }
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("supplies-updated");
+    }
 
     return sendSuccess(res, 200, "Stock ingresado con éxito", updateSupplies);
   } catch (error) {

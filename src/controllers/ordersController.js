@@ -35,12 +35,7 @@ const getOrders = async (req, res, next) => {
 
 const getOrderById = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id)
-      .populate({
-        path: "items.meal",
-        select: "name price",
-      })
-      .lean();
+    const order = await Order.findById(req.params.id).lean();
 
     if (!order) {
       throw new AppError(
@@ -53,15 +48,17 @@ const getOrderById = async (req, res, next) => {
 
     const orderResponse = {
       ...order,
-      items: order.items.map((item) => ({
-        _id: item.meal?._id || item.meal,
-        name: item.meal?.name || "Sin nombre",
-        price: item.meal?.price || 0,
+      items: order.meals.map((item) => ({
+        _id: item.meal,
+        name: item.name,
+        price: item.price,
         quantity: item.quantity,
       })),
     };
 
-    return sendSuccess(res, 200, "Comanda encontrada", orderResponse);
+    return sendSuccess(res, 200, "Comanda encontrada", {
+      order: orderResponse,
+    });
   } catch (error) {
     next(error);
   }
@@ -168,6 +165,15 @@ const dispatchOrder = async (req, res, next) => {
       );
     }
 
+    if (order.orderStatus !== ORDER_STATUS.PENDIENTE) {
+      throw new AppError(
+        "El pedido ya no está pendiente",
+        409,
+        null,
+        ERROR_CODES.CONFLICT,
+      );
+    }
+
     order.orderStatus = ORDER_STATUS.DESPACHADO;
     await order.save();
 
@@ -176,7 +182,9 @@ const dispatchOrder = async (req, res, next) => {
       io.emit("order-updated", order);
     }
 
-    return sendSuccess(res, 200, "El pedido ha sido despachado", order);
+    return sendSuccess(res, 200, "El pedido ha sido despachado", {
+      order: order,
+    });
   } catch (error) {
     next(error);
   }
@@ -197,12 +205,19 @@ const cancelOrder = async (req, res, next) => {
       );
     }
 
-    if (order.orderStatus !== ORDER_STATUS.CANCELADO) { 
-      for (const item of order.meals) {
-        await Meal.findByIdAndUpdate(item.meal, {
-          $inc: { currentStock: item.quantity },
-        });
-      }
+    if (order.orderStatus !== ORDER_STATUS.PENDIENTE) {
+      throw new AppError(
+        "El pedido ya no está pendiente",
+        409,
+        null,
+        ERROR_CODES.CONFLICT,
+      );
+    }
+
+    for (const item of order.meals) {
+      await Meal.findByIdAndUpdate(item.meal, {
+        $inc: { currentStock: item.quantity },
+      });
     }
 
     order.orderStatus = ORDER_STATUS.CANCELADO;
@@ -213,7 +228,9 @@ const cancelOrder = async (req, res, next) => {
       io.emit("order-updated", order);
     }
 
-    return sendSuccess(res, 200, "El pedido ha sido cancelado", order);
+    return sendSuccess(res, 200, "El pedido ha sido cancelado", {
+      order: order,
+    });
   } catch (error) {
     next(error);
   }
