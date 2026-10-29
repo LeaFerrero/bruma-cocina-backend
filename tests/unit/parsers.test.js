@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseDecimal } from "./parsers.js";
+import { parseDecimal } from "../../src/utils/parsers.js";
 
 test("convierte la coma decimal en punto", () => {
   assert.equal(parseDecimal("1,5", 2), 1.5);

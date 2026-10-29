@@ -15,7 +15,13 @@ const ADMIN = {
 const SUPPLIES = [
   { name: "Arroz", unit: UNITS.KG, price: 1800, currentStock: 20, minStock: 5 },
   { name: "Pollo", unit: UNITS.KG, price: 5200, currentStock: 15, minStock: 4 },
-  { name: "Tomate", unit: UNITS.KG, price: 2400, currentStock: 10, minStock: 3 },
+  {
+    name: "Tomate",
+    unit: UNITS.KG,
+    price: 2400,
+    currentStock: 10,
+    minStock: 3,
+  },
   {
     name: "Aceite de oliva",
     unit: UNITS.L,
@@ -31,6 +37,7 @@ const MEALS = [
   {
     name: "Pollo con arroz",
     price: 6500,
+    minStock: 5,
     category: ["Principal"],
     description: "Pechuga de pollo al horno con arroz y verduras.",
     image: "1793073953976-750247002.jpg",
@@ -42,6 +49,7 @@ const MEALS = [
   {
     name: "Arroz con tomate",
     price: 5200,
+    minStock: 3,
     category: ["Vegetariano"],
     description: "Arroz salteado con salsa de tomate casera.",
     image: "1793074335841-645078659.jpg",
@@ -75,7 +83,9 @@ async function seedAdmin() {
     passwordHash,
   });
 
-  console.log(`Admin creado -> usuario: ${userName} | contraseña: ${ADMIN.password}`);
+  console.log(
+    `Admin creado -> usuario: ${userName} | contraseña: ${ADMIN.password}`,
+  );
 }
 
 async function seedSupplies() {
