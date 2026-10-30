@@ -27,7 +27,7 @@ const getOrders = async (req, res, next) => {
 
     const orders = await Order.find(filter).sort({ createdAt: 1 }).lean();
 
-    return sendSuccess(res, 200, "Comandas listadas con éxito", orders);
+    return sendSuccess(res, 200, "Pedidos listadas con éxito", orders);
   } catch (error) {
     next(error);
   }
@@ -39,7 +39,7 @@ const getOrderById = async (req, res, next) => {
 
     if (!order) {
       throw new AppError(
-        "Comanda no encontrada",
+        "Pedido no encontrada",
         404,
         null,
         ERROR_CODES.NOT_FOUND,
@@ -56,7 +56,7 @@ const getOrderById = async (req, res, next) => {
       })),
     };
 
-    return sendSuccess(res, 200, "Comanda encontrada", {
+    return sendSuccess(res, 200, "Pedido encontrado", {
       order: orderResponse,
     });
   } catch (error) {
@@ -86,7 +86,7 @@ const createOrder = async (req, res, next) => {
 
       if (!mealDB) {
         throw new AppError(
-          `La vianda solicitada no existe`,
+          `El pedido solicitado no existe`,
           404,
           null,
           ERROR_CODES.NOT_FOUND,
@@ -167,7 +167,7 @@ const dispatchOrder = async (req, res, next) => {
 
     if (order.orderStatus !== ORDER_STATUS.PENDIENTE) {
       throw new AppError(
-        "El pedido ya no está pendiente",
+        "No se puede despachar un pedido ya despachado o cancelado",
         409,
         null,
         ERROR_CODES.CONFLICT,
@@ -198,7 +198,7 @@ const cancelOrder = async (req, res, next) => {
 
     if (!order) {
       throw new AppError(
-        "Pedido no encontrado",
+        "Pedido no encontrada",
         404,
         null,
         ERROR_CODES.NOT_FOUND,
@@ -207,7 +207,7 @@ const cancelOrder = async (req, res, next) => {
 
     if (order.orderStatus !== ORDER_STATUS.PENDIENTE) {
       throw new AppError(
-        "El pedido ya no está pendiente",
+        "No se puede cancelar un pedido ya despachado o cancelado",
         409,
         null,
         ERROR_CODES.CONFLICT,
