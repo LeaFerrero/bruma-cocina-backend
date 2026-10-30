@@ -76,8 +76,6 @@ describe("API de insumos (integración)", () => {
 
   it("rechaza el acceso a la lista sin iniciar sesión", async () => {
     const res = await api("/api/supplies", { auth: false });
-    console.log("STATUS RECIBIDO:", res.status); // 👈 Agregá esto para ver qué número llega
-    console.log("BODY RECIBIDO:", res.body);
     assert.ok([401, 403].includes(res.status));
   });
 
