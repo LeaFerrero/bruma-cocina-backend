@@ -21,7 +21,12 @@ const protectRoute = async (req, res, next) => {
     const user = await User.findById(payload.id);
 
     if (!user || user.status === "eliminado") {
-      res.clearCookie("token");
+      res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/",
+      });
       throw new AppError(
         "Usuario no válido o eliminado.",
         401,
@@ -33,7 +38,12 @@ const protectRoute = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      path: "/",
+    });
     next(error);
   }
 };

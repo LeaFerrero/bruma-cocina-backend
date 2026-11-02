@@ -18,7 +18,15 @@ const login = async (req, res, next) => {
           ERROR_CODES.BAD_REQUEST,
         );
       } catch (err) {
-        if (err instanceof AppError) throw err;
+        if (err instanceof AppError) {
+          throw err;
+        }
+        res.clearCookie("token", {
+          httpOnly: true,
+          sameSite: "none",
+          secure: true,
+          path: "/",
+        });
       }
     }
 
@@ -101,6 +109,20 @@ const verifySession = async (req, res, next) => {
 
     return sendSuccess(res, 200, "Sesión validada", { isLogged: true, user });
   } catch (error) {
+    const isAuthError =
+      error instanceof AppError ||
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError";
+
+    if (isAuthError) {
+      res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/",
+      });
+    }
+
     if (process.env.NODE_ENV !== "test") {
       console.log("Motivo del rechazo de JWT:", error.message);
     }
