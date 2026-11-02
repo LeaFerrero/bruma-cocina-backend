@@ -5,32 +5,34 @@ import Supply from "./models/Supply.js";
 import Meal from "./models/Meal.js";
 import { ROLES } from "./constants/roles.js";
 import { UNITS } from "./constants/units.js";
+const defaultUserPassword =
+  process.env.DEFAULT_USER_PASSWORD || "UserSecure2026*";
 
 const USERS = [
   {
     name: "admin",
     lastName: "admin",
     role: ROLES.ADMIN,
-    password: "Admin1234",
+    password: process.env.ADMIN_INIT_PASSWORD || "Admin1234",
   },
   {
     name: "cocina",
     lastName: "cocina",
     role: ROLES.COCINA,
-    password: "Cocina1234",
+    password: defaultUserPassword,
   },
   {
     name: "caja",
     lastName: "caja",
     role: ROLES.CAJA,
-    password: "Caja1234",
+    password: defaultUserPassword,
   },
 
   {
     name: "stock",
     lastName: "stok",
-    role: ROLES.CAJA,
-    password: "Sock1234",
+    role: ROLES.STOCK,
+    password: defaultUserPassword,
   },
 ];
 
@@ -147,8 +149,9 @@ const SUPPLIES = [
 
 const MEALS = [
   {
-    name: "Tartar de remolachas asadas al rescoldo, emulsión de cajú alimonada y chips de mandioca",
+    name: "Tartar de remolachas asadas al rescoldo",
     price: 9500,
+    currentStock: 10,
     minStock: 3,
     category: ["Vegetariano", "Entrada", "Sin TACC"],
     description:
@@ -168,8 +171,9 @@ const MEALS = [
     ],
   },
   {
-    name: "Flan de hongos silvestres (portobellos y champiñones) con crema ligera de queso brie y crocante de almendras",
+    name: "Flan de hongos silvestres",
     price: 11500,
+    currentStock: 10,
     minStock: 3,
     category: ["Vegetariano", "Entrada", "Gourmet"],
     description:
@@ -193,11 +197,8 @@ const MEALS = [
 
 async function seedUsers() {
   for (const userData of USERS) {
-    const userName = await User.generateUniqueUserName(
-      userData.name,
-      userData.lastName,
-    );
-    const existing = await User.findOne({ userName, status: "activo" });
+    const userName = `${userData.name}.${userData.lastName}`.toLowerCase();
+    const existing = await User.findOne({ userName });
     if (existing) {
       console.log(`Usuario ya existente: ${userName} (se omite)`);
       continue;
