@@ -85,6 +85,19 @@ const editUser = async (req, res, next) => {
       );
     }
 
+    if (
+      user.userName === "admin.admin" &&
+      role !== undefined &&
+      role !== user.role
+    ) {
+      throw new AppError(
+        "No está permitido modificar el rol del administrador principal",
+        403,
+        null,
+        ERROR_CODES.FORBIDDEN || "FORBIDDEN",
+      );
+    }
+
     const nameChanged = name !== undefined && name !== user.name;
     const lastNameChanged =
       lastName !== undefined && lastName !== user.lastName;
@@ -134,12 +147,21 @@ const deleteUser = async (req, res, next) => {
       );
     }
 
-    if (user.role === ROLES.ADMIN) {
+    if (user.userName === "admin.admin") {
       throw new AppError(
-        "No está permitido eliminar cuentas de Administrador",
+        "No está permitido eliminar al administrador principal del sistema",
         403,
         null,
-        ERROR_CODES.FORBIDDEN,
+        ERROR_CODES.FORBIDDEN || "FORBIDDEN",
+      );
+    }
+
+    if (req.user && req.user.id === user._id.toString()) {
+      throw new AppError(
+        "No puede eliminar su propia cuenta",
+        400,
+        null,
+        ERROR_CODES.BAD_REQUEST || "BAD_REQUEST",
       );
     }
 
