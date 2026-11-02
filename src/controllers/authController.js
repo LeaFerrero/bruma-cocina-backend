@@ -6,6 +6,22 @@ import ERROR_CODES from "../constants/errorCodes.js";
 
 const login = async (req, res, next) => {
   try {
+    const existingToken = req.cookies.token;
+    if (existingToken) {
+      try {
+        jwt.verify(existingToken, process.env.JWT_SECRET);
+
+        throw new AppError(
+          "Sesión activa detectada. Por favor, cierre sesión antes de continuar.",
+          400,
+          null,
+          ERROR_CODES.BAD_REQUEST,
+        );
+      } catch (err) {
+        if (err instanceof AppError) throw err;
+      }
+    }
+
     const { userName, password } = req.body;
     const user = await User.findOne({ userName });
 
