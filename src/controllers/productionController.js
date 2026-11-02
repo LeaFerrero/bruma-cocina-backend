@@ -26,7 +26,7 @@ export const registerProduction = async (req, res, next) => {
       if (!meal) {
         throw new AppError(
           "Vianda no encontrada.",
-          404,
+          404,  
           null,
           ERROR_CODES.NOT_FOUND,
         );

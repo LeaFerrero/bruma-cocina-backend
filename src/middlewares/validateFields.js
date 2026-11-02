@@ -11,7 +11,6 @@ const validateFields = (req, res, next) => {
   const errors = errorsMessages(req);
 
   if (!errors.isEmpty()) {
-    // Si la validación falla y Multer subió una imagen, la borramos del disco para que no sea huérfana
     if (req.file) {
       fs.unlink(req.file.path, (err) => {
         if (err) {
