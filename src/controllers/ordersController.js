@@ -144,7 +144,9 @@ const createOrder = async (req, res, next) => {
       io.emit("order-created");
     }
 
-    return sendSuccess(res, 201, "Pedido registrado con éxito", newOrder);
+    return sendSuccess(res, 201, "Pedido registrado con éxito", {
+      order: newOrder,
+    });
   } catch (error) {
     next(error);
   }

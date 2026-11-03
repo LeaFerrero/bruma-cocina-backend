@@ -174,7 +174,9 @@ const addStock = async (req, res, next) => {
       io.emit("supplies-updated");
     }
 
-    return sendSuccess(res, 200, "Stock ingresado con éxito", updateSupplies);
+    return sendSuccess(res, 200, "Stock ingresado con éxito", {
+      supplies: updateSupplies,
+    });
   } catch (error) {
     next(error);
   }

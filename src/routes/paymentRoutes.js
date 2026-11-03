@@ -12,3 +12,4 @@ router.use(verifyRole(ROLES.ADMIN, ROLES.CAJA));
 router.post("/", validatePayment, createPayment);
 
 export default router;
+  
