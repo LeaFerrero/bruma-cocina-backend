@@ -139,10 +139,10 @@ describe("Flujo de stock: producción, pedidos y cobro (integración)", () => {
     const body = await res.json();
 
     assert.equal(res.status, 201);
-    assert.equal(body.data.total, 19500); // 6500 x 3
+    assert.equal(body.data.order.total, 19500); // 6500 x 3
     assert.equal(await stockOfMeal(), 1);
 
-    orderId = body.data._id;
+    orderId = body.data.order._id;
   });
 
   it("rechaza un pedido que supera el stock disponible", async () => {
