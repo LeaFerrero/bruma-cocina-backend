@@ -30,7 +30,7 @@ const USERS = [
 
   {
     name: "stock",
-    lastName: "stok",
+    lastName: "stock",
     role: ROLES.STOCK,
     password: defaultUserPassword,
   },
