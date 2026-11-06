@@ -23,7 +23,13 @@ const errorHandler = (err, req, res, next) => {
 
     statusCode = 400;
     status = "fail";
-    message = `El valor "${duplicatedValue}" ya está registrado.`;
+
+    if (duplicatedField === "name") {
+      message = `Ya existe un registro con el nombre "${duplicatedValue}".`;
+    } else {
+      message = `El valor "${duplicatedValue}" para el campo ${duplicatedField} ya está registrado.`;
+    }
+
     errorCode = "DUPLICATE_KEY_ERROR";
   }
 

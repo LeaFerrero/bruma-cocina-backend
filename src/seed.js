@@ -5,34 +5,31 @@ import Supply from "./models/Supply.js";
 import Meal from "./models/Meal.js";
 import { ROLES } from "./constants/roles.js";
 import { UNITS } from "./constants/units.js";
-const defaultUserPassword =
-  process.env.DEFAULT_USER_PASSWORD || "UserSecure2026*";
 
 const USERS = [
   {
     name: "admin",
     lastName: "admin",
     role: ROLES.ADMIN,
-    password: process.env.ADMIN_INIT_PASSWORD || "Admin1234",
+    password: process.env.ADMIN_INIT_PASSWORD || "AdminSecure2026!",
   },
   {
     name: "cocina",
     lastName: "cocina",
     role: ROLES.COCINA,
-    password: defaultUserPassword,
+    password: process.env.COCINA_INIT_PASSWORD || "CocinaSecure2026#",
   },
   {
     name: "caja",
     lastName: "caja",
     role: ROLES.CAJA,
-    password: defaultUserPassword,
+    password: process.env.CAJA_INIT_PASSWORD || "CajaSecure2026$",
   },
-
   {
     name: "stock",
     lastName: "stock",
     role: ROLES.STOCK,
-    password: defaultUserPassword,
+    password: process.env.STOCK_INIT_PASSWORD || "StockSecure2026%",
   },
 ];
 

@@ -11,7 +11,7 @@ export const registerProduction = async (req, res, next) => {
 
     if (!meals || meals.length === 0) {
       throw new AppError(
-        "La lista de viandas esta vacia.",
+        "La lista de viandas está vacía.",
         400,
         null,
         ERROR_CODES.BAD_REQUEST,
@@ -26,7 +26,7 @@ export const registerProduction = async (req, res, next) => {
       if (!meal) {
         throw new AppError(
           "Vianda no encontrada.",
-          404,  
+          404,
           null,
           ERROR_CODES.NOT_FOUND,
         );
@@ -44,6 +44,8 @@ export const registerProduction = async (req, res, next) => {
       }
     }
 
+    const insufficientSupplies = [];
+
     for (const [ingredientId, amountNeeded] of Object.entries(
       requiredIngredients,
     )) {
@@ -59,13 +61,24 @@ export const registerProduction = async (req, res, next) => {
       }
 
       if (ingredient.currentStock < amountNeeded) {
-        throw new AppError(
-          `Stock insuficiente para ${ingredient.name}. Se necesitan ${amountNeeded.toFixed(3)}${ingredient.unit} pero solo hay ${ingredient.currentStock.toFixed(3)}${ingredient.unit}.`,
-          400,
-          null,
-          ERROR_CODES.INSUFFICIENT_STOCK,
-        );
+        insufficientSupplies.push({
+          id: ingredient._id,
+          name: ingredient.name,
+          unit: ingredient.unit,
+          required: parseDecimal(amountNeeded, 3),
+          available: parseDecimal(ingredient.currentStock, 3),
+          message: `Stock insuficiente para ${ingredient.name}. Se necesitan ${amountNeeded.toFixed(3)}${ingredient.unit} pero solo hay ${ingredient.currentStock.toFixed(3)}${ingredient.unit}.`,
+        });
       }
+    }
+
+    if (insufficientSupplies.length > 0) {
+      throw new AppError(
+        "Stock insuficiente para uno o más insumos.",
+        400,
+        insufficientSupplies,
+        ERROR_CODES.INSUFFICIENT_STOCK,
+      );
     }
 
     for (const [ingredientId, amountNeeded] of Object.entries(
