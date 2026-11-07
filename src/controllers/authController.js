@@ -49,7 +49,7 @@ const login = async (req, res, next) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "10s" },
+      { expiresIn: "1h" },
     );
 
     res.cookie("token", token, {
@@ -57,7 +57,7 @@ const login = async (req, res, next) => {
       sameSite: "none",
       secure: true,
       path: "/",
-      maxAge: 10 * 1000,
+      maxAge: 3600000,
     });
 
     return sendSuccess(res, 200, "Inicio de sesión exitoso", {
