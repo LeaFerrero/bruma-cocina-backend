@@ -11,25 +11,25 @@ const USERS = [
     name: "admin",
     lastName: "admin",
     role: ROLES.ADMIN,
-    password: process.env.ADMIN_INIT_PASSWORD || "AdminSecure2026!",
-  },
-  {
-    name: "cocina",
-    lastName: "cocina",
-    role: ROLES.COCINA,
-    password: process.env.COCINA_INIT_PASSWORD || "CocinaSecure2026#",
-  },
-  {
-    name: "caja",
-    lastName: "caja",
-    role: ROLES.CAJA,
-    password: process.env.CAJA_INIT_PASSWORD || "CajaSecure2026$",
+    password: process.env.ADMIN_INIT_PASSWORD || "AdminSecure2026",
   },
   {
     name: "stock",
     lastName: "stock",
     role: ROLES.STOCK,
-    password: process.env.STOCK_INIT_PASSWORD || "StockSecure2026%",
+    password: process.env.STOCK_INIT_PASSWORD || "StockSecure2026",
+  },
+  {
+    name: "caja",
+    lastName: "caja",
+    role: ROLES.CAJA,
+    password: process.env.CAJA_INIT_PASSWORD || "CajaSecure2026",
+  },
+  {
+    name: "cocina",
+    lastName: "cocina",
+    role: ROLES.COCINA,
+    password: process.env.COCINA_INIT_PASSWORD || "CocinaSecure2026",
   },
 ];
 

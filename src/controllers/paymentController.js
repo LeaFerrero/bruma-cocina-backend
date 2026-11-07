@@ -13,7 +13,7 @@ const createPayment = async (req, res, next) => {
     const orderExists = await Order.findById(order);
     if (!orderExists) {
       throw new AppError(
-        "La orden especificada no existe",
+        "La comanda especificada no existe",
         404,
         null,
         ERROR_CODES.NOT_FOUND,
@@ -22,7 +22,7 @@ const createPayment = async (req, res, next) => {
 
     if (orderExists.orderStatus === ORDER_STATUS.CANCELADO) {
       throw new AppError(
-        "No se puede cobrar un pedido cancelado",
+        "No se puede cobrar una comanda cancelada",
         409,
         null,
         "CONFLICT",
@@ -30,7 +30,7 @@ const createPayment = async (req, res, next) => {
     }
 
     if (orderExists.paymentStatus === PAYMENT_STATUS.PAGADO) {
-      throw new AppError("El pedido ya fue pagado", 409, null, "CONFLICT");
+      throw new AppError("La comanda ya fue pagada", 409, null, "CONFLICT");
     }
 
     const paymentStatus = PAYMENT_STATUS.PAGADO;
