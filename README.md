@@ -25,7 +25,7 @@ El sistema centraliza la gestión de pedidos, inventario, producción y cobros. 
 ### Características generales
 
 - Autenticación con JWT en cookie `httpOnly` y control de acceso por rol (`admin`, `cocina`, `caja` y `stock`).
-- Validación en tres niveles: `express-validator` en la API y esquemas de Mongoose en la base.
+- Validación en tres niveles: Zod en el frontend, `express-validator` en la API y esquemas de Mongoose en la base.
 - Manejo centralizado de errores con respuestas de formato unificado.
 - Precio histórico en cada pedido y total calculado siempre en el servidor.
 - Baja lógica en insumos, viandas y usuarios.
@@ -353,7 +353,7 @@ Iniciar el servidor desde la carpeta raíz del backend, porque `uploads/` se res
 
 ### No se puede crear un insumo o vianda con un nombre ya usado
 
-Los nombres son únicos y un registro eliminado de forma lógica sigue reservando el suyo. Reutilizar un nombre requiere editar o recuperar el registro eliminado.
+Los nombres son únicos y un registro eliminado de forma lógica sigue reservando el suyo.
 
 ### La primera respuesta del sitio desplegado demora
 
