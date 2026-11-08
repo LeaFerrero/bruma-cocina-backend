@@ -37,7 +37,7 @@ const supplySchema = mongoose.Schema(
     minStock: {
       type: Number,
       required: [true, "El stock minimo es obligatorio"],
-      min: [0, "El stock minimo no puede ser negativo"],
+      min: [0.001, "El stock minimo tiene que ser mayor a 0"],
       set: (value) => parseDecimal(value, 3),
     },
 
