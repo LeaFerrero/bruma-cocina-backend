@@ -366,8 +366,6 @@ Si el servicio estuvo un tiempo sin uso, la primera carga puede tardar unos segu
 - Aumentar las iteraciones de PBKDF2 para elevar el estándar de seguridad de las contraseñas.
 - Manejar de forma más flexible la unicidad de nombres de insumos y viandas dados de baja.
 - Normalizar el nombre de usuario generado (quitar acentos y espacios) para evitar nombres como `maría josé.pérez`.
-- Agregar un índice único en `userName`, para que la unicidad no dependa solo de la búsqueda previa en el código.
-- Generar el código de pedido con un contador atómico por día, para evitar códigos repetidos ante pedidos simultáneos.
 - Compartir las constantes de negocio (roles, estados, unidades) con el frontend en un paquete común.
 
 ## Enlaces
